@@ -19,7 +19,8 @@ struct Singleton
 
 
 /*
-** static global instance of Singleton strucutre which will be shared in other parts of the project
+** static global instance of Singleton strucutre which 
+** will be shared in other parts of the project
 */
 static Singleton instance;
 
