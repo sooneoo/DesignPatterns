@@ -101,7 +101,8 @@ fan_unit_set_speed(
     FanUnit * self
     , int speed)
 {
-    if(self->strategy != NULL && speed >= 0 && speed <= 8)
+    // safety for NULL pointer accessing
+    if(self->strategy != NULL)
         self->strategy->callback(self->strategy, speed);
 }
 
@@ -117,14 +118,14 @@ main(void)
 
     /*
     ** module working as interface for control
+    ** be carefull for initialization if it is worked with function pointers!
     */
-    FanUnit fan_control       = {0};
+    FanUnit fan_control       = {.strategy = STRATEGY(&ethernet)};
 
     /*
     ** dynamic behavior of control module
     ** it can sending commands either throw Ethernet network or throw Serial line based on runtime settings
     */
-    fan_unit_set_control_strategy(&fan_control, STRATEGY(&ethernet));
     fan_unit_set_speed(&fan_control, 5);
 
     fan_unit_set_control_strategy(&fan_control, STRATEGY(&serial));

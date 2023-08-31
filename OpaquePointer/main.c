@@ -1,3 +1,10 @@
+/*
+** Opaque pointer is used for prevent direct attribute access, 
+** or isolating dependencies for given structure 
+** Opaque pointer is usualy done dynamicaly on heap with malloc/free but, it is
+** also possible to do it on stack but, it is nececary to know how many instancies are used
+** in program to allocate enaught of memory during compilation
+*/
 #include <stdio.h>
 #include <stdlib.h>
 

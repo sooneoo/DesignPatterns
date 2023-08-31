@@ -29,6 +29,7 @@ typedef struct
     const char * sound;
 }Animal;
 
+
 /*
 ** Jedoduchý obecný konstruktor
 */
