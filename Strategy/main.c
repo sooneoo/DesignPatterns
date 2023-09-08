@@ -113,7 +113,7 @@ main(void)
     /*
     ** definition of strategy instances
     */ 
-    EthernetStrategy ethernet = {.super.callback = (StrategyCallback) serial_set_speed};
+    EthernetStrategy ethernet = {.super.callback = (StrategyCallback) ethernet_set_speed};
     SerialStrategy serial     = {.super.callback = (StrategyCallback) serial_set_speed};
 
     /*
