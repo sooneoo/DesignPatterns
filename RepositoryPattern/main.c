@@ -1,3 +1,12 @@
+/*
+ * Repository pattern is used for separation of the dependency for creation of more
+ * flexible api of the given module
+ * This module is then easier to test, more modular and it is easy to replace them
+ *
+ * Repository pattern is defined as abstract interface (VTab) which defined functions for
+ * data transaction needed for working of the given module. This interface is encapsulated in
+ * another module where is interconnected data module and module defining bussines logic
+ */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -127,6 +136,9 @@ main(void)
      * computation of the water valve flow
      */
     printf("water valve flow: %d\n", compute_flow(&WV_Manager));
+
+
+
 
     printf("Program exit..\n");
     return EXIT_SUCCESS;
