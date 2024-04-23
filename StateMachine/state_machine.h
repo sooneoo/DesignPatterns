@@ -5,10 +5,9 @@
 
 
 /*
-** state machine internal states definition
-*/
-typedef enum
-{
+ * state machine internal states definition
+ */
+typedef enum {
     STATE_WAIT
     , STATE_FINISH
     , STATE_ERROR
@@ -24,35 +23,32 @@ typedef enum
 
 
 /*
-** state machine structure
-*/
-typedef struct
-{
+ * state machine structure
+ */
+typedef struct {
     State state;
 }StateMachine;
 
 
 /*
-** Macro constructor for StateMachine
-*/
+ * Macro constructor for StateMachine
+ */
 #define StateMachine(...) (StateMachine){__VA_ARGS__}
 
 
 /*
-** structure describing inputs for the state machine
-*/
-typedef struct
-{
+ * structure describing inputs for the state machine
+ */
+typedef struct {
     int a;
     int b;
 }StateMachine_Input;
 
 
-
-bool
-state_machine_runtime(
-    StateMachine * self
-    , StateMachine_Input * input);
+/*
+ * running state machine
+ */
+bool state_machine_runtime(StateMachine * self, StateMachine_Input * input);
 
 
 
