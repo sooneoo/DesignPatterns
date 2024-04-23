@@ -1,5 +1,7 @@
 # Prerequisites
 *.d
+*.stackdump
+
 
 # Object files
 *.o
