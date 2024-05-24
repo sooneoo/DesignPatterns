@@ -11,8 +11,7 @@
 /*
 ** Interface declaration in from of Virtual function table (VTab)
 */
-typedef struct 
-{
+typedef struct  {
     void(*greed)(void);
     void(*say_goodbye)(void);
 }VTab;
@@ -28,8 +27,7 @@ typedef struct
 /*
 ** First object implementing VTab interface
 */
-typedef struct
-{
+typedef struct {
     VTab vtab;
     /* another possible parameters */
 }English;
@@ -38,16 +36,12 @@ typedef struct
 /*
 ** implementation of virtual functions for English structure
 */
-static void
-en_greed(void)
-{
+static void en_greed(void) {
     printf("Hello there.\n");
 }
 
 
-static void
-en_say_goodbye(void)
-{
+static void en_say_goodbye(void) {
     printf("good bye.\n");
 }
 
@@ -58,8 +52,7 @@ en_say_goodbye(void)
 /*
 ** Second object implementing VTab interface
 */
-typedef struct
-{
+typedef struct {
     VTab vtab;
     /* another possible parameters */
 }Deutch;
@@ -68,16 +61,12 @@ typedef struct
 /*
 ** implementation of virtual functions for Deutch structure
 */
-static void
-de_greed(void)
-{
+static void de_greed(void) {
     printf("Hallo, wie geht es?\n");
 }
 
 
-static void
-de_say_goodbye(void)
-{
+static void de_say_goodbye(void) {
     printf("Auf wiedersehen.\n");
 }
 
@@ -86,9 +75,7 @@ de_say_goodbye(void)
 #define deutch (Deutch){.vtab={de_greed, de_say_goodbye}}
 
 
-int
-main(void)
-{
+int main(void) {
     // Creating of objects
     English en = english;
     Deutch de  = deutch;
@@ -103,3 +90,7 @@ main(void)
     printf("Program exit..\n");
     return EXIT_SUCCESS;
 }
+
+
+
+
