@@ -30,8 +30,6 @@ void say_german(void) {
 int main(void) {
     German german = {.say_german};
 
-
     printf("Program exit..\n");
-
     return EXIT_SUCCESS;
 }

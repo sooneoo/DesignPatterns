@@ -13,11 +13,8 @@
 static char * nullptr = "(null)"
 
 
-char * 
-repr(int value)
-{
-    if(value < 100)
-    {
+char * repr(int value) {
+    if(value < 100) {
         
     }
 }
@@ -27,11 +24,8 @@ repr(int value)
 
 
 
-int
-main(void)
-{
+int main(void) {
     printf("Program exit..\n");
-
     return EXIT_SUCCESS;
 }
 

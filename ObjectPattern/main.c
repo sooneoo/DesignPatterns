@@ -9,18 +9,16 @@
 #include "lib.h"
 
 
-int 
-main(void)
-{
+int main(void) {
     /*
-    ** creating instante of Class structure and initializing it with default values
-    */
+     * creating instante of Class structure and initializing it with default values
+     */
     Class obj = Class(2, 3); 
 
     /* 
-    ** calling Class structure method, it is only function which accepts 
-    ** Class pointer (or another types) as input parameter
-    */
+     * calling Class structure method, it is only function which accepts 
+     * Class pointer (or another types) as input parameter
+     */
     printf("sum: %d\n", class_sum(&obj));  
     printf("Prorgam exit\n");
 

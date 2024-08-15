@@ -3,26 +3,24 @@
 
 
 /*
-** class/structure definition which groups related data together 
-*/
-typedef struct
-{
+ * class/structure definition which groups related data together 
+ */
+typedef struct {
     int a;
     int b;
-}Class;
+} Class;
 
 
 /*
-** simple constructor based on C initializers
-*/
+ * simple constructor based on C initializers
+ */
 #define Class(...)(Class){__VA_ARGS__}
 
 
 /*
-** method declaration
-*/
-int
-class_sum(Class * self);
+ * method declaration
+ */
+int class_sum(Class * self);
 
 
 #endif
