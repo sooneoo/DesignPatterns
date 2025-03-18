@@ -1,87 +1,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 
-/*
- * Event structure which contains bool signal for calling the callback function
- * callback function and pointer to optional input parameter
- */
+typedef struct Observer {
+    void (*on_event)(struct Observer *);
+} Observer;
+
+
+#define OBSERVER(T) ((Observer*)(T))
+
+
 typedef struct {
-    char * name;
-    void (*callback)(void *);
-}Event;
+    Observer observer;
+    float x;
+    float y;
+} Player;
+
+
+void player_on_ground_position(Player * self) {
+    printf("(%f x %f) player on the ground\n", self->x, self->y);
+}
+
+
+// simple constructor for Player class
+#define player(_x, _y) (Player) {                                       \
+    .observer = {                                                       \
+        .on_event = (void(*)(Observer*)) player_on_ground_position      \
+    }                                                                   \
+    , .x = (_x)                                                         \
+    , .y = (_y)                                                         \
+}
 
 
 typedef enum {
-    EVENT_1
-    , EVENT_2
-    , EVENT_N
-}EVENTS;
+    Observer_Player_1
+    , Observer_SIZE
+} Observer_ID;
 
 
-/*
- * Simple event bus represented as static array of Events
- */
 typedef struct {
     size_t size;
-    Event event[EVENT_N];
-}EventBus;
+    Observer * observer[Observer_SIZE];
+} Subject;
 
 
-/*
- * function for emiting the signal for calling the callback function
- */
-void event_listener_emit(EventBus * self, char * name, void * param) {
-    for(size_t i = 0; i < self->size; i ++) {
-        if(strcmp(self->event[i].name, name) == 0) {
-            self->event[i].callback(param);
-        }
+#define subject() (Subject){0}
+
+
+void subject_subscribe(Subject * self, size_t ID, Observer * observer) {
+    self->observer[ID] = observer;
+    self->size++;
+}
+
+
+void subject_notify(Subject * self) {
+    for(size_t i = 0; i < self->size; i++) {
+        // check if given player is on the ground and emit event
+        self->observer[i]->on_event(self->observer[i]);
     }
-}
-
-
-/*
- * callback for both events
- * it prints the parameter as string
- */
-void event_callback_1(void * param) {
-    printf("callback_1: %s\n", (char *) param);
-}
-
-
-void event_callback_2(void * param) {
-    printf("callback_2: %s\n", (char *) param);
 }
 
 
 int main(void) {
-    /*
-     * static initialization of Event bus
-     * visible part of the application
-     */ 
-    EventBus bus = {
-        .size = EVENT_N
-        , .event = {{"Event 1", event_callback_1}, {"Event 2", event_callback_2}}
-    };
+    Player p1 = player(100, 100);
+    Subject p_subject = subject();
 
-    /*
-     * event loop, hidden part of the application
-     */
-    for(size_t i = 0; i < 10; i ++) {
-        if(i == 1 || i == 5) {
-            event_listener_emit(&bus, "Event 1", "signal for event 1");
-        }
-
-        if(i == 3 || i == 5 || i == 9) {
-            event_listener_emit(&bus, "Event 2", "signal for event 2");
-        }
-    }
+    subject_subscribe(&p_subject, Observer_Player_1, OBSERVER(&p1));
+    subject_notify(&p_subject);
 
     printf("Program exit..\n");
-
     return EXIT_SUCCESS;
 }
+
+
 
 

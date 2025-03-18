@@ -37,6 +37,7 @@ static int cls_add_one(int a, int b) {
 int main(void) {
     Thunk * cls = (Thunk*) &AddOneClosure(THUNK(cls_add_one), 1);
     printf("%d\n", add_one((AddOneClosure*) cls, 41));
+
     printf("Program exit\n");
     return EXIT_SUCCESS;
 }

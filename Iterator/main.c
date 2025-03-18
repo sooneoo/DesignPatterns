@@ -10,17 +10,19 @@
 #include <stdint.h>
 
 
-typedef struct vector {
-    void*(*next)(struct vector *);
-} vector;
+typedef struct Iterator {
+    void*(*next)(struct Iterator *);
+} Iterator;
 
 
-#define vector_next(T) ((T)->next((T)))
+#define iterator_next(T) ((T)->next((T)))
 
 
-#define foreach(var, T) \
-    for(void * var = vector_next((T)); var != NULL; var = vector_next((T)))
-
+#define iterate(T, type, var, block) \
+    do { \
+        for(type var = iterator_next((T)); var != NULL; var = iterator_next((T))) \
+            block \
+    } while(0)
 
 #define INPUT_BUFF_SIZE 10
 
@@ -29,7 +31,7 @@ typedef struct vector {
  * buffered input 
  */
 typedef struct {
-    vector vector;
+    Iterator iterator;
 
     uint8_t size;
     uint8_t head;
@@ -83,18 +85,18 @@ bool input_read(Input * self) {
 }
 
 
-vector * input_new(void) {
+Iterator * input_new(void) {
     Input * self = malloc(sizeof(Input));
 
     if(self != NULL) {
         *self = (Input) {
-            .vector = {
-                .next = (void*(*)(vector*)) input_next
+            .iterator = {
+                .next = (void*(*)(Iterator*)) input_next
             }
         };
     } 
 
-    return (vector*) self;
+    return (Iterator*) self;
 }
 
 
@@ -106,9 +108,9 @@ void input_finalize(Input * self) {
 
 
 int main(void) {
-    vector * in = input_new();
+    Iterator * in = input_new();
 
-    printf("vector available: %s\n", input_empty(INPUT(in)) == false ? "true" : "false");
+    printf("iterator available: %s\n", input_empty(INPUT(in)) == false ? "true" : "false");
 
     for(size_t i = 0; i < INPUT_BUFF_SIZE + 1;  i++) {
         if(input_read(INPUT(in)) == false) {
@@ -116,11 +118,11 @@ int main(void) {
         }
     }   
 
-    printf("vector available: %s\n\n", input_empty(INPUT(in)) == false ? "true" : "false");
+    printf("iterator available: %s\n\n", input_empty(INPUT(in)) == false ? "true" : "false");
 
-    foreach(i, in) {
-        printf("readed from sensor: %d\n", *(uint8_t*) i);
-    }
+    iterate(in, uint8_t*, i, {
+        printf("readed from sensor: %d\n", *i);
+    });
 
     input_finalize(INPUT(in));
 

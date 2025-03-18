@@ -8,23 +8,36 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
-static char * nullptr = "(null)"
+typedef struct {
+    size_t size;
+    const char * c_str;
+}Text;
 
 
-char * repr(int value) {
-    if(value < 100) {
-        
+Text text_empty = {0};
+
+
+#define text(T) (Text){.size = strlen((T)), .c_str = (T)}
+
+
+void text_show(Text * text) {
+    if(text->size > 0 && text->c_str != NULL) {
+        printf("Text: %ld | %s\n", text->size, text->c_str);
+    } else {
+        printf("empty string\n");
     }
 }
 
 
-
-
-
-
 int main(void) {
+    Text t1 = text("Hello World!");
+
+    text_show(&t1);
+    text_show(&text_empty);
+
     printf("Program exit..\n");
     return EXIT_SUCCESS;
 }
