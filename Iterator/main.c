@@ -11,18 +11,27 @@
 
 
 typedef struct Iterator {
-    void*(*next)(struct Iterator *);
+    void * context;
+    size_t index;
+    void (*__reset__)(struct Iterator *);
+    void*(*__next__)(struct Iterator *);
 } Iterator;
 
 
-#define iterator_next(T) ((T)->next((T)))
+#define iterator_reset(T) ((T)->__reset__((T)))
+
+
+#define iterator_next(T) ((T)->__next__((T)))
 
 
 #define iterate(T, type, var, block) \
     do { \
-        for(type var = iterator_next((T)); var != NULL; var = iterator_next((T))) \
+        Iterator iterator = (T);        \
+        iterator_reset(&iterator);      \
+        for(type var = iterator_next(&iterator); var != NULL; iterator.index++, var = iterator_next(&iterator)) \
             block \
     } while(0)
+
 
 #define INPUT_BUFF_SIZE 10
 
@@ -31,8 +40,6 @@ typedef struct Iterator {
  * buffered input 
  */
 typedef struct {
-    Iterator iterator;
-
     uint8_t size;
     uint8_t head;
     uint8_t tail;
@@ -61,15 +68,30 @@ bool input_full(Input * self) {
 }
 
 
-static uint8_t * input_next(Input * self) {
-    if(input_empty(self) == false) {
-       uint8_t * value = &self->input_buffer[self->tail];
-       self->tail = (self->tail + 1) % INPUT_BUFF_SIZE;
-       self->size--;
+static void input_iterator_reset(Iterator * it) {
+    it->index = 0;
+}
+
+
+static void * input_iterator_next(Iterator * it) {
+    Input * context = it->context;
+    if(input_empty(context) == false) {
+       uint8_t * value = &context->input_buffer[context->tail];
+       context->tail = (context->tail + 1) % INPUT_BUFF_SIZE;
+       context->size--;
        return value;
     } else {
         return NULL;
     }
+}
+
+
+Iterator input_to_iterator(Input * self) {
+    return (Iterator) {
+        .context = self
+        , .__reset__ = input_iterator_reset
+        , .__next__ = input_iterator_next
+    };
 }
 
 
@@ -85,46 +107,27 @@ bool input_read(Input * self) {
 }
 
 
-Iterator * input_new(void) {
-    Input * self = malloc(sizeof(Input));
-
-    if(self != NULL) {
-        *self = (Input) {
-            .iterator = {
-                .next = (void*(*)(Iterator*)) input_next
-            }
-        };
-    } 
-
-    return (Iterator*) self;
-}
-
-
-void input_finalize(Input * self) {
-    if(self != NULL) {
-        free(self);
-    }
+Input input(void) {
+    return (Input) {0};
 }
 
 
 int main(void) {
-    Iterator * in = input_new();
+    Input sensor = input();
 
-    printf("iterator available: %s\n", input_empty(INPUT(in)) == false ? "true" : "false");
+    printf("iterator available: %s\n", input_empty(&sensor) == false ? "true" : "false");
 
     for(size_t i = 0; i < INPUT_BUFF_SIZE + 1;  i++) {
-        if(input_read(INPUT(in)) == false) {
+        if(input_read(&sensor) == false) {
             printf("input queue full: %ld\n", i);
         }
     }   
 
-    printf("iterator available: %s\n\n", input_empty(INPUT(in)) == false ? "true" : "false");
+    printf("iterator available: %s\n\n", input_empty(&sensor) == false ? "true" : "false");
 
-    iterate(in, uint8_t*, i, {
-        printf("readed from sensor: %d\n", *i);
+    iterate(input_to_iterator(&sensor), uint8_t*, i, {
+        printf("%zu readed from sensor: %d\n",iterator.index,  *i);
     });
-
-    input_finalize(INPUT(in));
 
     printf("Program exit..\n");
     return EXIT_SUCCESS;
