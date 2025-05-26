@@ -41,7 +41,7 @@ typedef struct {
  * bulder function which initialize Car structure from accumulated 
  * parameters in CarBuilder
  */
-Car car_builder_build( CarBuilder * self) {
+Car car_builder_build(CarBuilder * self) {
     return (Car) {
         .brand        = self->brand
         , .model      = self->model
