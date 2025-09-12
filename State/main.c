@@ -58,15 +58,15 @@ typedef enum {
 } Event_StateID;
 
 
-typedef struct Event_Loop Event_Loop;
+typedef struct Event_Context Event_Context;
 
 
 typedef struct Event_State {
-    struct Event_State (*callback)(Event_Loop *, Keys);
+    struct Event_State (*callback)(Event_Context *, Keys);
 } Event_State;
 
 
-struct Event_Loop {
+struct Event_Context {
     Keys keys;
     uint8_t key_press_timer;
     Event_State state[Event_StateID_N];
@@ -76,11 +76,11 @@ struct Event_Loop {
 
 typedef struct {
     Event_State state;
-    Event_Loop event_loop;
+    Event_Context event_loop;
 } Event;
 
 
-static Event_State event_state_no_action(Event_Loop * self, Keys keys) {
+static Event_State event_state_no_action(Event_Context * self, Keys keys) {
     self->key_press_timer = 0;
     self->keys = keys;
     self->signal = Event_Signal_Nothing;
@@ -95,7 +95,7 @@ static Event_State event_state_no_action(Event_Loop * self, Keys keys) {
 
 #define LONG_PRESS_DELAY 2
 
-static Event_State event_state_key_pressed(Event_Loop * self, Keys keys) {
+static Event_State event_state_key_pressed(Event_Context * self, Keys keys) {
     self->key_press_timer ++;
 
     if(keys.byte == 0) {
@@ -113,7 +113,7 @@ static Event_State event_state_key_pressed(Event_Loop * self, Keys keys) {
 }
 
 
-static Event_State event_state_short_press(Event_Loop * self, Keys keys) {
+static Event_State event_state_short_press(Event_Context * self, Keys keys) {
     if(self->keys.attributes.onoff == true) {
         self->signal = Event_Signal_ShortPress_OnOff;
     } else if(self->keys.attributes.up == true) {
@@ -131,7 +131,7 @@ static Event_State event_state_short_press(Event_Loop * self, Keys keys) {
 } 
 
 
-static Event_State event_state_long_press(Event_Loop * self, Keys keys) {
+static Event_State event_state_long_press(Event_Context * self, Keys keys) {
     if(self->keys.attributes.onoff == true) {
         self->signal = Event_Signal_LongPress_OnOff;
     } else if(self->keys.attributes.up == true) {
@@ -149,7 +149,7 @@ static Event_State event_state_long_press(Event_Loop * self, Keys keys) {
 }
 
 
-static Event_State event_state_key_released(Event_Loop * self, Keys keys) {
+static Event_State event_state_key_released(Event_Context * self, Keys keys) {
     self->keys = keys;
     self->signal = Event_Signal_Nothing;
 
