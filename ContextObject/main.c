@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+ *Návrhový vzor Context (často nazývaný také Context Object) je strukturální vzor, jehož hlavním cílem je zapouzdřit stav a systémové informace, které by jinak musely být předávány skrze mnoho funkcí jako hromada jednotlivých parametrů.
+ *
+ */
+
 
 typedef struct {
     size_t capacity;
